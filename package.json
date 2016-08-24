@@ -1,0 +1,28 @@
+{
+  "name": "Toshl Mate",
+  "author": "Marwan Zogheib",
+  "version": "0.1.0",
+  "keywords": ["pebble-app", "toshl", "finance", "expense"],
+  "private": true,
+  "dependencies": {},
+  "pebble": {
+    "displayName": "toshl-mate",
+    "uuid": "deaf6638-2796-4f40-8e9f-766ee83aa311",
+    "sdkVersion": "3",
+    "enableMultiJS": true,
+    "targetPlatforms": [
+      "aplite",
+      "basalt",
+      "chalk"
+    ],
+    "watchapp": {
+      "watchface": false
+    },
+    "messageKeys": [
+      "dummy"
+    ],
+    "resources": {
+      "media": []
+    }
+  }
+}
