@@ -3,6 +3,8 @@ var clayConfig = require('./config/config');
 var clayConfigCustom = require('./config/custom-clay');
 var clay = new Clay(clayConfig, clayConfigCustom, { autoHandleEvents: false });
 
+var messaging = require('./libs/messaging');
+
 Pebble.addEventListener('showConfiguration', function(e) {
     Pebble.openURL(clay.generateUrl());
 });
@@ -19,11 +21,7 @@ Pebble.addEventListener('webviewclosed', function(e) {
 
     console.log('Passed dict: ' + dictString);
     // Send
-    Pebble.sendAppMessage(
-        dict,
-        function(e) {},
-        function(e) {}
-    );
+    messaging.sendDict(dict);
 });
 
 Pebble.addEventListener("ready", function(e) {
