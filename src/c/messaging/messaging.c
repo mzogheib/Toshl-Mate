@@ -1,5 +1,4 @@
 #include "messaging.h"
-#include "../windows/dialog_config_window.h"
 
 void messaging_init() {
     // Register message callbacks
