@@ -32,7 +32,6 @@ function list (endpoint, parameters) {
 
     HTTP.get(api.baseUrl + endpoint + '?' + urlParams.join('&'), getAuth())
     .then(function (response) {
-        console.log(response);
         deferred.resolve(JSON.parse(response));
     });
 
@@ -41,7 +40,6 @@ function list (endpoint, parameters) {
 
 function create (endpoint, payload) {
     var deferred = Q.defer();
-    console.log(JSON.stringify(payload));
 
     HTTP.post(api.baseUrl + endpoint, payload, getAuth())
     .then(function (response) {

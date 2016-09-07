@@ -4,4 +4,4 @@
 #define DIALOG_CONFIG_WINDOW_APP_NAME "Toshl Mate"
 #define DIALOG_CONFIG_WINDOW_MESSAGE  "Set up in the\nPebble app"
 
-void dialog_config_window_push();
+void window_dialog_config_push();

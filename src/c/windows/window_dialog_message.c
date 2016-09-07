@@ -73,15 +73,13 @@ static void window_appear(Window *window) {
     animation_set_handlers(s_appear_anim, (AnimationHandlers) {
         .stopped = anim_stopped_handler
     }, NULL);
-    animation_set_delay(s_appear_anim, 1000);
+    animation_set_delay(s_appear_anim, 250);
     animation_schedule(s_appear_anim);
 }
 
-void dialog_message_window_push(char *text) {
-    APP_LOG(APP_LOG_LEVEL_INFO, "Dialog: %s", text);
-    
+void window_dialog_message_push(char *text) {
     strcpy(string_label_message, text);
-    
+
     if(!s_main_window) {
         s_main_window = window_create();
         window_set_background_color(s_main_window, GColorBlack);

@@ -20,7 +20,7 @@ function get (url, auth) {
 
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
-//             console.log(xhr.responseText);
+            // console.log(xhr.responseText);
             deferred.resolve(xhr.responseText);
         }
     };
@@ -38,6 +38,7 @@ function post (url, payload, auth) {
     var xhr = new XMLHttpRequest();
     var deferred = Q.defer();
     console.log('POST: ' + url);
+    // console.log(JSON.stringify(payload));
 
     xhr.open('POST', url, true);
     xhr.setRequestHeader('Authorization', 'Basic ' + auth);

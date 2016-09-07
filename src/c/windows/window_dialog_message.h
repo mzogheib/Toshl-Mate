@@ -1,6 +1,6 @@
 #pragma once
 #include <pebble.h>
 
-#define DIALOG_MESSAGE_WINDOW_MARGIN   10
+#define DIALOG_MESSAGE_WINDOW_MARGIN 10
 
-void dialog_message_window_push();
+void window_dialog_message_push(char *text);

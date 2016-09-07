@@ -7,6 +7,7 @@ module.exports = {
 
 // Send a dictionary of data to the Pebble
 function sendDict(dictionary) {
+    console.log(JSON.stringify(dictionary));
     // Send
     Pebble.sendAppMessage(
         dictionary,

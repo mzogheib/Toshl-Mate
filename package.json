@@ -1,5 +1,5 @@
 {
-    "name": "Toshl Mate",
+    "name": "toshl-mate",
     "author": "Marwan Zogheib",
     "version": "0.1.0",
     "keywords": [
@@ -14,20 +14,27 @@
         "q": "^1.4.1"
     },
     "pebble": {
-        "displayName": "toshl-mate",
+        "displayName": "Toshl Mate",
         "uuid": "deaf6638-2796-4f40-8e9f-766ee83aa311",
         "sdkVersion": "3",
         "enableMultiJS": true,
         "targetPlatforms": [
             "aplite",
             "basalt",
-            "chalk"
+            "chalk",
+            "diorite"
         ],
         "watchapp": {
             "watchface": false
         },
         "messageKeys": [
-            "AUTH"
+            "AUTH",
+            "NO_AUTH",
+            "EXPENSES_HEADER",
+            "EXPENSES_ACTUAL",
+            "EXPENSES_PLANNED",
+            "EXPENSES_TOTAL",
+            "EXPENSE_ADDED"
         ],
         "resources": {
             "media": [

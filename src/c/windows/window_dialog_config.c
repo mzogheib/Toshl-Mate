@@ -11,7 +11,7 @@ static BitmapLayer *s_icon_layer;
 static GBitmap *s_icon_bitmap;
 
 static void window_load(Window *window) {
-    Layer *window_layer = window_get_root_layer(window);    
+    Layer *window_layer = window_get_root_layer(window);
     GRect bounds = layer_get_bounds(window_layer);
 
     s_icon_bitmap = gbitmap_create_with_resource(RESOURCE_ID_CONFIG_REQUIRED);
@@ -56,10 +56,20 @@ static void window_unload(Window *window) {
     s_main_window = NULL;
 }
 
-void dialog_config_window_push() {
+// If this window is pushed at any point in the app, the back button should exit the app completely
+static void back_to_quit_single_click_handler(ClickRecognizerRef recognizer, void *context) {
+    window_stack_pop_all(true);
+}
+
+static void click_config_provider(void *context) {
+    window_single_click_subscribe(BUTTON_ID_BACK, back_to_quit_single_click_handler);
+}
+
+void window_dialog_config_push() {
     if(!s_main_window) {
         s_main_window = window_create();
         window_set_background_color(s_main_window, PBL_IF_COLOR_ELSE(GColorDarkGray, GColorWhite));
+        window_set_click_config_provider(s_main_window, click_config_provider);
         window_set_window_handlers(s_main_window, (WindowHandlers) {
             .load = window_load,
             .unload = window_unload
