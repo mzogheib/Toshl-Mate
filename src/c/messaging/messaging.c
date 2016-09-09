@@ -1,6 +1,6 @@
 #include "messaging.h"
 #include "../windows/window_dialog_config.h"
-#include "../windows/window_main_menu.h"
+#include "../windows/window_menu_main.h"
 #include "../menu_data.h"
 
 void messaging_init() {
@@ -23,36 +23,36 @@ void inbox_received_callback(DictionaryIterator *iterator, void *context) {
     } else {
         Tuple *expenses_header = dict_find(iterator, MESSAGE_KEY_EXPENSES_HEADER);
         if(expenses_header) {
-            strcpy(s_main_menu_section_2_header, "Expenses ");
-            strcat(s_main_menu_section_2_header, expenses_header->value->cstring);
+            strcpy(s_menu_main_section_2_header, "Expenses ");
+            strcat(s_menu_main_section_2_header, expenses_header->value->cstring);
         }
 
         Tuple *expenses_actual = dict_find(iterator, MESSAGE_KEY_EXPENSES_ACTUAL);
         if(expenses_actual) {
-            strcpy(s_main_menu_section_2_rows[0], "Actual $");
-            strcat(s_main_menu_section_2_rows[0], expenses_actual->value->cstring);
+            strcpy(s_menu_main_section_2_rows[0], "Actual $");
+            strcat(s_menu_main_section_2_rows[0], expenses_actual->value->cstring);
         }
 
         Tuple *expenses_planned = dict_find(iterator, MESSAGE_KEY_EXPENSES_PLANNED);
         if(expenses_planned) {
-            strcpy(s_main_menu_section_2_rows[1], "Planned $");
-            strcat(s_main_menu_section_2_rows[1], expenses_planned->value->cstring);
+            strcpy(s_menu_main_section_2_rows[1], "Planned $");
+            strcat(s_menu_main_section_2_rows[1], expenses_planned->value->cstring);
         }
 
         Tuple *expenses_total = dict_find(iterator, MESSAGE_KEY_EXPENSES_TOTAL);
         if(expenses_total) {
-            strcpy(s_main_menu_section_2_rows[2], "Total $");
-            strcat(s_main_menu_section_2_rows[2], expenses_total->value->cstring);
+            strcpy(s_menu_main_section_2_rows[2], "Total $");
+            strcat(s_menu_main_section_2_rows[2], expenses_total->value->cstring);
         }
 
         // Future messages:
         // Expense added
         // Expense could not be added
 
-        if(window_main_menu_pushed()) {
-            window_main_menu_redraw();
+        if(window_menu_main_pushed()) {
+            window_menu_main_redraw();
         } else {
-            window_main_menu_push();
+            window_menu_main_push();
         }
     }
 }

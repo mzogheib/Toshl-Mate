@@ -1,8 +1,6 @@
 #include <pebble.h>
 #include "messaging/messaging.h"
 #include "windows/window_dialog_message.h"
-#include "windows/window_main_menu.h"
-
 
 static Window *s_main_window;
 
