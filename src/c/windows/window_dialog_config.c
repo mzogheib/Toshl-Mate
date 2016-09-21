@@ -10,6 +10,8 @@ static BitmapLayer *s_icon_layer;
 
 static GBitmap *s_icon_bitmap;
 
+static int s_dialog_type;
+
 static void window_load(Window *window) {
     Layer *window_layer = window_get_root_layer(window);
     GRect bounds = layer_get_bounds(window_layer);
@@ -56,16 +58,22 @@ static void window_unload(Window *window) {
     s_main_window = NULL;
 }
 
-// If this window is pushed at any point in the app, the back button should exit the app completely
-static void back_to_quit_single_click_handler(ClickRecognizerRef recognizer, void *context) {
-    window_stack_pop_all(true);
+// If the auth dialog is displayed then the back button should exit the app completely
+static void back_single_click_handler(ClickRecognizerRef recognizer, void *context) {
+    if(s_dialog_type == DIALOG_CONFIG_WINDOW_AUTH) {
+        window_stack_pop_all(true);
+    } else if(s_dialog_type == DIALOG_CONFIG_WINDOW_FAV) {
+        window_stack_pop(true);
+    }
 }
 
 static void click_config_provider(void *context) {
-    window_single_click_subscribe(BUTTON_ID_BACK, back_to_quit_single_click_handler);
+    window_single_click_subscribe(BUTTON_ID_BACK, back_single_click_handler);
 }
 
-void window_dialog_config_push() {
+void window_dialog_config_push(int dialog_type) {
+    s_dialog_type = dialog_type;
+
     if(!s_main_window) {
         s_main_window = window_create();
         window_set_background_color(s_main_window, PBL_IF_COLOR_ELSE(GColorDarkGray, GColorWhite));
@@ -75,5 +83,6 @@ void window_dialog_config_push() {
             .unload = window_unload
         });
     }
+
     window_stack_push(s_main_window, true);
 }

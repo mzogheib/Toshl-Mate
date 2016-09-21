@@ -77,6 +77,10 @@ static void window_appear(Window *window) {
     animation_schedule(s_appear_anim);
 }
 
+bool window_dialog_message_pushed() {
+    return (s_main_window) ? true : false;
+}
+
 void window_dialog_message_push(char *text) {
     strcpy(string_label_message, text);
 

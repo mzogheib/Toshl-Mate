@@ -7,6 +7,10 @@ var Q = require('../../node_modules/q/q');
 var messaging = require('./libs/messaging');
 var toshl = require('./toshl');
 
+Pebble.addEventListener("ready", function(e) {
+    sendMenuData();
+});
+
 Pebble.addEventListener('showConfiguration', function(e) {
     Pebble.openURL(clay.generateUrl());
 });
@@ -19,12 +23,69 @@ Pebble.addEventListener('webviewclosed', function(e) {
     // Get the keys and values from each config item
     clay.getSettings(e.response);
 
+    sendMenuData();
+});
+
+Pebble.addEventListener('appmessage', function (e) {
+    console.log(JSON.stringify(e.payload));
+    setTimeout(sendResponse, 2000);
+    // Timeout for 2000ms
+    // Send random response back to watch (could / couldn't add)
+
+    function sendResponse () {
+        var dict = {
+            'EXPENSE_ADDED': 1
+        };
+
+        messaging.sendDict(dict);
+    }
+})
+
+function sendMenuData () {
     // Check if the app is authorised
     var config = JSON.parse(localStorage.getItem('clay-settings'));
 
-    if(config && config['AUTH']) {
+    if (config && config['AUTH']) {
         getFinancialReport()
             .then(function (dict) {
+                // Get any saved favourites and append to the dict
+                var favourites = [
+                    [
+                        0,
+                        'A title 1',
+                        'A subtitle 1',
+                        '$234.22'
+                    ],
+                    [
+                        1,
+                        'A title 2',
+                        'A subtitle 2',
+                        '$111.33'
+                    ],
+                    [
+                        2,
+                        'A title 3',
+                        'A subtitle 3',
+                        '$34534.45'
+                    ],
+                    [
+                        3,
+                        'A title 4',
+                        'A subtitle 1',
+                        '$1.45'
+                    ],
+                    [
+                        4,
+                        'A title 5',
+                        'A subtitle 5',
+                        '$34534.56'
+                    ]
+                ];
+                dict['EXPENSE_FAVOURITE_1'] = favourites[0].join('|');
+                dict['EXPENSE_FAVOURITE_2'] = favourites[1].join('|');
+                // dict['EXPENSE_FAVOURITE_3'] = favourites[2].join('|');
+                // dict['EXPENSE_FAVOURITE_4'] = favourites[3].join('|');
+                // dict['EXPENSE_FAVOURITE_5'] = favourites[4].join('|');
                 messaging.sendDict(dict);
             });
     } else {
@@ -32,23 +93,7 @@ Pebble.addEventListener('webviewclosed', function(e) {
             'NO_AUTH': 0
         });
     }
-});
-
-Pebble.addEventListener("ready", function(e) {
-    // Check if the app is authorised
-    var config = JSON.parse(localStorage.getItem('clay-settings'));
-
-    if(config && config['AUTH']) {
-        getFinancialReport()
-            .then(function (dict) {
-                messaging.sendDict(dict);
-            });
-    } else {
-        messaging.sendDict({
-            'NO_AUTH': 0
-        });
-    }
-});
+}
 
 function getFinancialReport() {
     var deferred = Q.defer();
@@ -90,7 +135,7 @@ function getFinancialReport() {
         var toDate;
         var endDay;
 
-        if(startDay === 1) {
+        if (startDay === 1) {
             endDay = endOfThisMonth.getDate();
             fromDate = new Date(today.getFullYear(), today.getMonth(), startDay);
             toDate = new Date(today.getFullYear(), today.getMonth(), endDay);

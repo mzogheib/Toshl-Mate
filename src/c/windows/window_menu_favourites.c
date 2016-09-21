@@ -1,31 +1,22 @@
-#include "window_menu_main.h"
 #include "window_menu_favourites.h"
-#include "window_dialog_message.h"
-#include "window_dialog_config.h"
+#include "../windows/window_dialog_message.h"
+#include "../messaging/messaging.h"
 
 static Window *s_main_window;
 static MenuLayer *s_menu_layer;
 
-// Used to force the back button to quit the app.
-// Source: https://gist.github.com/sarfata/10574031
-static ClickConfigProvider previous_ccp;
+int num_favourites;
 
 #define SECTION_1 0
-#define SECTION_2 1
-#define NUM_MENU_SECTIONS 2
-#define NUM_SECTION_ROWS_1 1
-#define NUM_SECTION_ROWS_2 3
 
 static uint16_t menu_get_num_sections_callback(MenuLayer *menu_layer, void *data) {
-    return NUM_MENU_SECTIONS;
+    return num_favourites;
 }
 
 static uint16_t menu_get_num_rows_callback(MenuLayer *menu_layer, uint16_t section_index, void *context) {
     switch(section_index) {
         case SECTION_1:
-            return NUM_SECTION_ROWS_1;
-        case SECTION_2:
-            return NUM_SECTION_ROWS_2;
+            return num_favourites;
         default:
             return 0;
     }
@@ -38,10 +29,7 @@ static int16_t menu_get_header_height_callback(MenuLayer *menu_layer, uint16_t s
 static void menu_draw_header_callback(GContext* ctx, const Layer *cell_layer, uint16_t section_index, void *data) {
     switch(section_index) {
         case SECTION_1:
-            menu_cell_basic_header_draw(ctx, cell_layer, s_menu_main_section_1_header);
-            break;
-        case SECTION_2:
-            menu_cell_basic_header_draw(ctx, cell_layer, s_menu_main_section_2_header);
+            menu_cell_basic_header_draw(ctx, cell_layer, s_menu_favourites_section_1_header);
             break;
     }
 }
@@ -49,32 +37,15 @@ static void menu_draw_header_callback(GContext* ctx, const Layer *cell_layer, ui
 static void menu_draw_row_callback(GContext* ctx, const Layer *cell_layer, MenuIndex *cell_index, void *data) {
     switch(cell_index->section) {
         case SECTION_1:
-            menu_cell_basic_draw(ctx, cell_layer, s_menu_main_section_1_rows[cell_index->row], NULL, NULL);
-            break;
-        case SECTION_2:
-            menu_cell_basic_draw(ctx, cell_layer, s_menu_main_section_2_rows[cell_index->row], NULL, NULL);
+            menu_cell_basic_draw(ctx, cell_layer, s_menu_favourites_section_1_rows[cell_index->row].title, NULL, NULL);
             break;
     }
 }
 
 static void menu_select_callback(MenuLayer *menu_layer, MenuIndex *cell_index, void *data) {
-    switch(cell_index->section) {
-        case SECTION_1:
-            switch(cell_index->row) {
-                case 0:
-                    // If there are favourites push the menu, otherwise push a dialog
-                    if(num_favourites > 0){
-                        window_menu_favourites_push();
-                    } else {
-                        window_dialog_config_push(DIALOG_CONFIG_WINDOW_FAV);
-                    }
-                    break;
-            }
-            break;
-        case SECTION_2:
-            APP_LOG(APP_LOG_LEVEL_INFO, "Selected row: %d", cell_index->row);
-            break;
-    }
+    APP_LOG(APP_LOG_LEVEL_INFO, "Selected row: %d", cell_index->row);
+    send_dict(s_menu_favourites_section_1_rows[cell_index->row].message_key);
+    window_dialog_message_push("Adding expense...");
 }
 
 #ifdef PBL_ROUND
@@ -93,29 +64,12 @@ static int16_t get_cell_height_callback(MenuLayer *menu_layer, MenuIndex *cell_i
 }
 #endif
 
-bool window_menu_main_pushed() {
+bool window_menu_favourites_pushed() {
     return (s_main_window) ? true : false;
 }
 
-void window_menu_main_redraw() {
+void window_menu_favourites_redraw() {
     menu_layer_reload_data(s_menu_layer);
-}
-
-// Define what you want to do when the back button is pressed
-static void back_button_handler(ClickRecognizerRef recognizer, void *context) {
-    window_stack_pop_all(true);
-}
-
-// This is the new ClickConfigProvider we will set, it just calls the old one and then subscribe
-// for back button events.
-static void new_ccp(void *context) {
-    previous_ccp(context);
-    window_single_click_subscribe(BUTTON_ID_BACK, back_button_handler);
-}
-
-static void force_back_button(Window *window, MenuLayer *menu_layer) {
-    previous_ccp = window_get_click_config_provider(window);
-    window_set_click_config_provider_with_context(window, new_ccp, menu_layer);
 }
 
 static void window_load(Window *window) {
@@ -136,8 +90,6 @@ static void window_load(Window *window) {
 
     // Bind the menu layer's click config provider to the window for interactivity
     menu_layer_set_click_config_onto_window(s_menu_layer, window);
-    // Also bind the back button to quit the app
-    force_back_button(window, s_menu_layer);
 
     layer_add_child(window_layer, menu_layer_get_layer(s_menu_layer));
 }
@@ -146,7 +98,7 @@ static void window_unload(Window *window) {
     menu_layer_destroy(s_menu_layer);
 }
 
-void window_menu_main_push() {
+void window_menu_favourites_push() {
     if(!s_main_window) {
         s_main_window = window_create();
         window_set_window_handlers(s_main_window, (WindowHandlers) {

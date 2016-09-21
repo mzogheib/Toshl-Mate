@@ -30,6 +30,11 @@
         "messageKeys": [
             "AUTH",
             "NO_AUTH",
+            "EXPENSE_FAVOURITE_1",
+            "EXPENSE_FAVOURITE_2",
+            "EXPENSE_FAVOURITE_3",
+            "EXPENSE_FAVOURITE_4",
+            "EXPENSE_FAVOURITE_5",
             "EXPENSES_HEADER",
             "EXPENSES_ACTUAL",
             "EXPENSES_PLANNED",
