@@ -1,4 +1,4 @@
-var Q = require('../../node_modules/q/q');
+var Q = require('../../../node_modules/q/q');
 
 module.exports = {
     get: get,

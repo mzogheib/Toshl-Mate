@@ -1,6 +1,6 @@
 var HTTP = require('./libs/http');
 var Base64 = require('./libs/base64');
-var Q = require('../node_modules/q/q');
+var Q = require('../../node_modules/q/q');
 
 module.exports = {
     create: create,
